@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 
 export const execute = (command) => {
+    console.log(`Executing command: ${command}`);
     return new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
             if (error) {

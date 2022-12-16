@@ -1,7 +1,7 @@
 import * as Service from './Service.js';
 const arg = process.argv.slice(2)[0];
 
-const getMac = () => {
+const getMac = async () => {
     if (!arg) return;
     if (arg.toString() === '-mac') {
         var mac = process.argv.slice(2)[1];
@@ -17,26 +17,20 @@ const getMac = () => {
     }
 };
 
-const macAddress = getMac();
-if (macAddress) {
+
+
+const pairMode = async () => {
+    const macAddress = await getMac();
     Service.execute("sudo bluetoothctl").then((result) => {
-        console.log(result);
         Service.execute("power on").then((result) => {
-            console.log(result);
             Service.execute("pairable on").then((result) => {
-                console.log(result);
                 Service.execute("agent on").then((result) => {
-                    console.log(result);
                     Service.execute("default-agent").then((result) => {
-                        console.log(result);
                         Service.execute("scan on").then((result) => {
-                            console.log(result);
                             // Pair with device
                             Service.execute(`pair ${macAddress}`).then((result) => {
-                                console.log(result);
                                 // Trust device
                                 Service.execute(`trust ${macAddress}`).then((result) => {
-                                    console.log(result);
                                 });
                             });
                         });
@@ -44,7 +38,8 @@ if (macAddress) {
                 });
             });
         });
+    }).catch((error) => {
+        console.log(error);
     });
-} else {
-    console.log('MAC address is not valid');
-}
+};
+
