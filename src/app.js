@@ -17,7 +17,7 @@ const getMac = async () => {
     }
 };
 
-
+var connected = false;
 
 const pairMode = async () => {
     const macAddress = await getMac();
@@ -31,11 +31,39 @@ const pairMode = async () => {
                             Service.execute(`pair ${macAddress}`).then((result) => {
                                 // Trust device
                                 Service.execute(`trust ${macAddress}`).then((result) => {
+                                    // Bind device to serial port
+                                    Service.execute(`sudo rfcomm bind rfcomm0 ${macAddress}`).then((result) => {
+                                        connected = true;
+                                    }).catch((error) => {
+                                        console.log(`Failed to bind device to serial port: ${error}`);
+                                    });
+                                }).catch((error) => {
+                                    console.log(`Failed to trust device: ${error}`);
                                 });
+                            }).catch((error) => {
+                                console.log(`Failed to pair device: ${error}`);
                             });
+                        }).catch((error) => {
+                            console.log(`Failed to scan: ${error}`);
                         });
+                    }).catch((error) => {
+                        console.log(`Failed to set default agent: ${error}`);
                     });
+                }).catch((error) => {
+                    console.log(`Failed to set agent: ${error}`);
                 });
+            }).catch((error) => {
+                console.log(`Failed to set pairable: ${error}`);
+            });
+        }).catch((error) => {
+            console.log(`Failed to set power: ${error}`);
+            console.log(`Attempting to start bluetoothd...`);
+            Service.execute("sudo systemctl start bluetooth").then((result) => {
+                console.log(`Bluetoothd started successfully`);
+                // Restart function
+                pairMode();
+            }).catch((error) => {
+                console.log(`Failed to start bluetoothd: ${error}`);
             });
         });
     }).catch((error) => {
@@ -43,3 +71,25 @@ const pairMode = async () => {
     });
 };
 
+setInterval(() => {
+    if (connected) {
+        Service.execute("screen /dev/rfcomm0").then((result) => {
+            Service.execute("ath0").then((result) => {
+                // Automatic protocol detection
+                Service.execute("atsp0").then((result) => {
+                    Service.getVin().then((result) => {
+                        console.log(`VIN: ${result}`);
+                    }).catch((error) => {
+                        console.log(`Failed to get VIN: ${error}`);
+                    });
+                }).catch((error) => {
+                    console.log(`Failed to set protocol: ${error}`);
+                });
+            }).catch((error) => {
+                console.log(`Failed to set header: ${error}`);
+            });
+        }).catch((error) => {
+            console.log(`Failed to connect to device: ${error}`);
+        });
+    }
+}, 1000);

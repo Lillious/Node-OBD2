@@ -16,7 +16,10 @@ export const execute = (command) => {
 };
 
 // Get vehicle VIN
-const getVin = async () => {
-    const result = await execute("ls -la");
-    console.log(result);
+export const getVin = () => {
+    execute('0901').then((result) => {
+        return result;
+    }).catch((error) => {
+        console.log(`Failed to get VIN: ${error}`);
+    });
 };
