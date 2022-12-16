@@ -1,0 +1,25 @@
+{
+  "name": "node-obd2",
+  "version": "1.0.0",
+  "description": "A framework for connecting to a vehicle's OBD2 port",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lillious/Node-OBD2.git"
+  },
+  "keywords": [],
+  "author": "Logan Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lillious/Node-OBD2/issues"
+  },
+  "homepage": "https://github.com/Lillious/Node-OBD2#readme",
+  "dependencies": {
+    "child_process": "^1.0.2"
+  }
+}
