@@ -1,4 +1,4 @@
-import * as Service from './service.js';
+import * as Service from './Service.js';
 const arg = process.argv.slice(2)[0];
 
 const getMac = () => {
