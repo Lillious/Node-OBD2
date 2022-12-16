@@ -2,6 +2,7 @@ import * as Service from './Service.js';
 const arg = process.argv.slice(2)[0];
 
 const getMac = () => {
+    if (!arg) return;
     if (arg.toString() === '-mac') {
         var mac = process.argv.slice(2)[1];
         mac = mac.replace(/-/g, ':').toUpperCase();
@@ -44,4 +45,6 @@ if (macAddress) {
             });
         });
     });
+} else {
+    console.log('MAC address is not valid');
 }
