@@ -4,6 +4,11 @@ import * as Service from './Service.js';
 import { SerialPort } from 'serialport'
 const arg = process.argv.slice(2)[0];
 
+const Settings = {
+    ConnectionAttempts: 0,
+    Connected: false,
+};
+
 // const getMac = () => {
 //     if (!arg) return;
 //     if (arg.toString() === '-mac') {
@@ -24,6 +29,7 @@ const arg = process.argv.slice(2)[0];
 const options = {
     baudRate: 115200,
     path: '/dev/ttyUSB0',
+    autoOpen: true,
 };
 
 // Create serial port instance with options
@@ -86,6 +92,15 @@ serialport.on('permissionError', (error) => {
 // Catch serial port errors
 serialport.on('error', (error) => {
     console.log(`${error}`);
+    if (`${error}` === "Error: Opening /dev/ttyUSB0: Unknown error code 3") {
+        console.log(`[#${[Settings.ConnectionAttempts+1]}] Attempting to reconnect...`);
+        setTimeout(() => {
+            // Timeout after 5 attempts
+            if (Settings.ConnectionAttempts >= 4) return console.log('Failed to reconnect');
+            Settings.ConnectionAttempts++;
+            serialport.open();
+        }, 5000);
+    }
 });
 
 // Catch serial port data
