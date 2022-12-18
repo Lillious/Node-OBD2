@@ -91,8 +91,7 @@ serialport.on('permissionError', (error) => {
 
 // Catch serial port errors
 serialport.on('error', (error) => {
-    console.log(`${error}`);
-    if (`${error}` === "Error: Opening /dev/ttyUSB0: Unknown error code 3" || `${error}` === "Error: No such file or directory, cannot open /dev/ttyUSB0") {
+    if (`${error}` === "Error: Opening /dev/ttyUSB0: Unknown error code 3" || `${error}` === "Error: Error: No such file or directory, cannot open /dev/ttyUSB0") {
         console.log(`[#${[Settings.ConnectionAttempts+1]}] Attempting to reconnect...`);
         setTimeout(() => {
             // Timeout after 5 attempts
@@ -100,6 +99,8 @@ serialport.on('error', (error) => {
             Settings.ConnectionAttempts++;
             serialport.open();
         }, 5000);
+    } else {
+        console.log(`${error}`);
     }
 });
 
