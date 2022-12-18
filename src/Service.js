@@ -25,7 +25,7 @@ serialport.on('open', async () => {
 
     const run = async (command) => {
         // Do not attempt to write to serial port if it is not open
-        if (!serialport.Connected) return;
+        //if (!serialport.Connected) return;
         serialport.write(command, (error) => {
             console.log(`${command}`);
             if (error) {
