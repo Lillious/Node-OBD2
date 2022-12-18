@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events';
 const eventEmitter = new EventEmitter();
+import { ReadlineParser } from '@serialport/parser-readline'
 import { SerialPort } from 'serialport'
 
 const Settings = {
@@ -16,7 +17,7 @@ const options = {
 
 // Create serial port instance with options
 const serialport = new SerialPort(options)
-
+const parser = serialport.pipe(new ReadlineParser());
 // Connect to serial port
 serialport.on('open', async () => {
 
@@ -84,10 +85,8 @@ serialport.on('error', (error) => {
     }
 });
 
-// Catch serial port data
-serialport.on('data', (data) => {
-    console.log(`${data}`);
-});
+// Parse serial port data
+parser.on('data', console.log);
 
 // Catch serial port disconnect
 serialport.on('disconnect', () => {
