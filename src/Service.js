@@ -91,16 +91,15 @@ serialport.on('permissionError', (error) => {
 
 // Catch serial port errors
 serialport.on('error', (error) => {
-    if (`${error}` === "Error: Opening /dev/ttyUSB0: Unknown error code 3" || `${error}` === "Error: Error: No such file or directory, cannot open /dev/ttyUSB0") {
+    console.log(`${error}`);
+    if (error.toString().includes("Error: Opening /dev/ttyUSB0") || error.toString().includes("No such file or directory")) {
         console.log(`[#${[Settings.ConnectionAttempts+1]}] Attempting to reconnect...`);
         setTimeout(() => {
             // Timeout after 5 attempts
-            if (Settings.ConnectionAttempts >= 4) return console.log('Failed to reconnect');
+            if (Settings.ConnectionAttempts >= 4) return console.log(`Unable to reconnect to ${options.path}`);
             Settings.ConnectionAttempts++;
             serialport.open();
         }, 5000);
-    } else {
-        console.log(`${error}`);
     }
 });
 
@@ -121,4 +120,8 @@ eventEmitter.on('connected', () => {
 
 eventEmitter.on('disconnected', () => {
     console.log(`Disconnected from ${options.path}`);
+});
+
+process.on('uncaughtException', function(error) {
+    serialport.open();
 });
