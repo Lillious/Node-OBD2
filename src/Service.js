@@ -24,8 +24,6 @@ serialport.on('open', async () => {
     eventEmitter.emit('connected');
 
     const run = async (command) => {
-        // Do not attempt to write to serial port if it is not open
-        //if (!serialport.Connected) return;
         serialport.write(command, (error) => {
             console.log(`${command}`);
             if (error) {
@@ -34,17 +32,17 @@ serialport.on('open', async () => {
         });
     };
 
-    await run('ATZ');
+    await this.run('ATZ');
     // Disable echo
-    await run('ATE0');
+    await this.run('ATE0');
     // Disable linefeeds and carriage returns
-    await run('ATL0');
+    await this.run('ATL0');
     // Disable spaces in responses
-    await run('ATS0');
+    await this.run('ATS0');
     // Disable headers in responses
-    await run('ATH0');
+    await this.run('ATH0');
     // Set protocol to automatic
-    await run('ATSP0');
+    await this.run('ATSP0');
 
 });
 
