@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Lillious/Node-OBD2#readme",
   "dependencies": {
-    "child_process": "^1.0.2"
+    "child_process": "^1.0.2",
+    "serialport": "^10.5.0"
   }
 }
