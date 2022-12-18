@@ -1,29 +1,11 @@
 import { EventEmitter } from 'node:events';
 const eventEmitter = new EventEmitter();
-import * as Service from './Service.js';
 import { SerialPort } from 'serialport'
-const arg = process.argv.slice(2)[0];
 
 const Settings = {
     ConnectionAttempts: 0,
     Connected: false,
 };
-
-// const getMac = () => {
-//     if (!arg) return;
-//     if (arg.toString() === '-mac') {
-//         var mac = process.argv.slice(2)[1];
-//         mac = mac.replace(/-/g, ':').toUpperCase();
-//         const addMacReg = "^[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}$";
-//         const regex = new RegExp(addMacReg);
-//         if (regex.test(mac)) {
-//             return mac;
-//         } else {
-//             console.log('MAC address is not valid');
-//             return undefined;
-//         }
-//     }
-// };
 
 // Serial port options
 const options = {
@@ -36,52 +18,34 @@ const options = {
 const serialport = new SerialPort(options)
 
 // Connect to serial port
-serialport.on('open', () => {
+serialport.on('open', async () => {
+
     // Emit connected event
     eventEmitter.emit('connected');
 
-    // Write to serial port
-    serialport.write('ATZ', (error) => {
-        console.log(`ATZ`);
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
+    const run = async (command) => {
+        // Do not attempt to write to serial port if it is not open
+        if (!serialport.Connected) return;
+        serialport.write(command, (error) => {
+            console.log(`${command}`);
+            if (error) {
+                console.log(`${error}`);
+            }
+        });
+    };
 
+    await run('ATZ');
     // Disable echo
-    serialport.write('ATE0', (error) => {
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
-
+    await run('ATE0');
     // Disable linefeeds and carriage returns
-    serialport.write('ATL0', (error) => {
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
-
+    await run('ATL0');
     // Disable spaces in responses
-    serialport.write('ATS0', (error) => {
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
-
+    await run('ATS0');
     // Disable headers in responses
-    serialport.write('ATH0', (error) => {
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
-
+    await run('ATH0');
     // Set protocol to automatic
-    serialport.write('ATSP0', (error) => {
-        if (error) {
-            console.log(`${error}`);
-        }
-    });
+    await run('ATSP0');
+
 });
 
 // Catch serial port permission errors
@@ -114,14 +78,31 @@ serialport.on('disconnect', () => {
     eventEmitter.emit('disconnected');
 });
 
+// Catch serial port close
+serialport.on('close', () => {
+    // Emit disconnected event
+    eventEmitter.emit('disconnected');
+});
+
 eventEmitter.on('connected', () => {
+    Settings.Connected = true;
+    // Reset connection attempts
+    Settings.ConnectionAttempts = 0;
     console.log(`Connected to ${options.path}`);
 });
 
 eventEmitter.on('disconnected', () => {
+    // Set connected to false
+    Settings.Connected = false;
+    // Reset connection attempts
+    Settings.ConnectionAttempts = 0;
     console.log(`Disconnected from ${options.path}`);
 });
 
+// Catch uncaught exceptions and attempt to reconnect
 process.on('uncaughtException', function(error) {
+    console.log(`${error}`);
+    // Attempt to reconnect if not already connected
+    if (Settings.Connected) return;
     serialport.open();
 });
