@@ -31,6 +31,7 @@ serialport.on('open', async () => {
                     console.log(`${error}`);
                     reject(error);
                 }
+                console.log(`> ${command}`);
                 resolve();
             });
         });
