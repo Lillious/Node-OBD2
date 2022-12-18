@@ -23,7 +23,6 @@ serialport.on('open', async () => {
     // Emit connected event
     eventEmitter.emit('connected');
 
-    // New promise based write function
     const run = (command) => {
         return new Promise((resolve, reject) => {
             serialport.write(command, (error) => {
@@ -60,7 +59,10 @@ serialport.on('open', async () => {
     run('ATSP0').catch((error) => {
         throw new Error(`${error}`);
     });
-
+    // Get vehicle VIN number
+    run('0901').catch((error) => {
+        throw new Error(`${error}`);
+    });
 });
 
 // Catch serial port permission errors
