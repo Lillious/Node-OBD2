@@ -23,26 +23,42 @@ serialport.on('open', async () => {
     // Emit connected event
     eventEmitter.emit('connected');
 
-    const run = async (command) => {
-        serialport.write(command, (error) => {
-            console.log(`${command}`);
-            if (error) {
-                console.log(`${error}`);
-            }
+    // New promise based write function
+    const run = (command) => {
+        return new Promise((resolve, reject) => {
+            serialport.write(command, (error) => {
+                if (error) {
+                    console.log(`${error}`);
+                    reject(error);
+                }
+                resolve();
+            });
         });
     };
 
-    await this.run('ATZ');
+    run('ATZ').catch((error) => {
+        throw new Error(`${error}`);
+    });
     // Disable echo
-    await this.run('ATE0');
+    run('ATE0').catch((error) => {
+        throw new Error(`${error}`);
+    });
     // Disable linefeeds and carriage returns
-    await this.run('ATL0');
+    run('ATL0').catch((error) => {
+        throw new Error(`${error}`);
+    });
     // Disable spaces in responses
-    await this.run('ATS0');
+    run('ATS0').catch((error) => {
+        throw new Error(`${error}`);
+    });
     // Disable headers in responses
-    await this.run('ATH0');
+    run('ATH0').catch((error) => {
+        throw new Error(`${error}`);
+    });
     // Set protocol to automatic
-    await this.run('ATSP0');
+    run('ATSP0').catch((error) => {
+        throw new Error(`${error}`);
+    });
 
 });
 
