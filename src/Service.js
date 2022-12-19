@@ -2,8 +2,6 @@ import { EventEmitter } from 'node:events';
 const eventEmitter = new EventEmitter();
 import { ReadlineParser } from '@serialport/parser-readline'
 import { SerialPort } from 'serialport'
-// import { MockBinding } from '@serialport/binding-mock'
-// import { SerialPortStream } from '@serialport/stream'
 import { Buffer } from 'node:buffer';
 
 const Settings = {
@@ -11,16 +9,11 @@ const Settings = {
     Connected: false,
 };
 
-/* Testing */
-// MockBinding.createPort('/dev/ROBOT', { echo: true, record: true })
-
 // Serial port options
 const options = {
     baudRate: 115200,
     path: '/dev/ttyUSB0',
-    // path: '/dev/ROBOT',
     autoOpen: true,
-    // binding: MockBinding,
     dataBits: 8,
     parity: 'none',
     flowControl: false,
@@ -28,7 +21,6 @@ const options = {
 
 // Create serial port instance with options
 const serialport = new SerialPort(options)
-// const serialport = new SerialPortStream(options)
 const parser = serialport.pipe(new ReadlineParser());
 // Connect to serial port
 serialport.on('open', async () => {
