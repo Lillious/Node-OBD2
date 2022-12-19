@@ -1,9 +1,8 @@
 import { EventEmitter } from 'node:events';
 const eventEmitter = new EventEmitter();
 import { ReadlineParser } from '@serialport/parser-readline'
-import { SerialPort } from 'serialport'
-// import { MockBinding } from '@serialport/binding-mock'
-// import { SerialPortStream } from '@serialport/stream'
+import { MockBinding } from '@serialport/binding-mock'
+import { SerialPortStream } from '@serialport/stream'
 import { Buffer } from 'node:buffer';
 
 const Settings = {
@@ -11,24 +10,21 @@ const Settings = {
     Connected: false,
 };
 
-/* Testing */
-// MockBinding.createPort('/dev/ROBOT', { echo: true, record: true })
-
 // Serial port options
 const options = {
     baudRate: 115200,
-    path: '/dev/ttyUSB0',
-    // path: '/dev/ROBOT',
+    path: '/dev/test',
     autoOpen: true,
-    // binding: MockBinding,
+    binding: MockBinding,
     dataBits: 8,
     parity: 'none',
     flowControl: false,
 };
 
+MockBinding.createPort(options.path, { echo: true, record: true })
+
 // Create serial port instance with options
-const serialport = new SerialPort(options)
-// const serialport = new SerialPortStream(options)
+const serialport = new SerialPortStream(options)
 const parser = serialport.pipe(new ReadlineParser());
 // Connect to serial port
 serialport.on('open', async () => {
@@ -39,7 +35,7 @@ serialport.on('open', async () => {
     const run = (command) => {
         return new Promise((resolve, reject) => {
             // Write to serial port as a buffer
-            serialport.write(Buffer.from(command) + "\r\n", (error) => {
+            serialport.write(Buffer.from(command) + "\n", (error) => {
                 if (error) {
                     reject(error);
                 }
@@ -48,35 +44,12 @@ serialport.on('open', async () => {
         });
     };
 
-    run('ATZ').catch((error) => {
+    // Get vehicle VIN
+    run('0901').catch((error) => {
         throw new Error(`${error}`);
     });
-    // Disable echo
-    run('ATE0').catch((error) => {
-        throw new Error(`${error}`);
-    });
-    // Disable linefeeds and carriage returns
-    run('ATL0').catch((error) => {
-        throw new Error(`${error}`);
-    });
-    // Disable spaces in responses
-    run('ATS0').catch((error) => {
-        throw new Error(`${error}`);
-    });
-    // Disable headers in responses
-    run('ATH0').catch((error) => {
-        throw new Error(`${error}`);
-    });
-    // Set protocol to automatic
-    run('ATSP0').catch((error) => {
-        throw new Error(`${error}`);
-    });
-    // Get vehicle information
-    run('010D').catch((error) => {
-        throw new Error(`${error}`);
-    });
-});
 
+});
 // Catch serial port permission errors
 serialport.on('permissionError', (error) => {
     console.log(`${error}`);
@@ -97,6 +70,13 @@ serialport.on('error', (error) => {
 });
 
 parser.on('data', (data) => {
+    if (data == '0901') {
+        // Simulate proper data response from the 0901 AT command
+        data = '57 42 41 56 43 39 33 35 37 37 4b 30 33 31 37 35 32'
+        const simulatedVin = Buffer.from(data.replace(/\s/g, ''), 'hex').toString('utf8');
+        console.log(`Vehicle VIN: ${simulatedVin}`);
+        return;
+    }
     console.log(`Data: ${data}`);
 });
 
