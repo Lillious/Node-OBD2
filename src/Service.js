@@ -1,7 +1,9 @@
 import { EventEmitter } from 'node:events';
 const eventEmitter = new EventEmitter();
-import { ReadlineParser } from '@serialport/parser-readline'
-import { SerialPort } from 'serialport'
+import { ReadlineParser } from '@serialport/parser-readline';
+import { autoDetect } from '@serialport/bindings-cpp';
+const Binding = autoDetect();
+import { SerialPort } from 'serialport';
 import { Buffer } from 'node:buffer';
 
 const Settings = {
@@ -12,16 +14,34 @@ const Settings = {
 // Serial port options
 const options = {
     baudRate: 115200,
-    path: '/dev/ttyUSB0',
     autoOpen: true,
     dataBits: 8,
+    path: '',
     parity: 'none',
     flowControl: false,
 };
 
+// Automatic serial port detection
+// Works on any platform that supports serialport
+
+// Scan device for serial ports
+const OpenSerialPorts = await Binding.list();
+
+Object.keys(OpenSerialPorts).forEach((key) => {
+    // Return first serial port found
+    console.log(`Found serial device: ${OpenSerialPorts[key].path}`)
+    return options.path = OpenSerialPorts[key].path;
+});
+
+// Check if a serial port was found
+if (options.path === '') {
+    throw new Error(`No serial devices found. Please connect a device and try again.`);
+}
+
 // Create serial port instance with options
 const serialport = new SerialPort(options)
 const parser = serialport.pipe(new ReadlineParser());
+
 // Connect to serial port
 serialport.on('open', async () => {
 
@@ -78,10 +98,10 @@ serialport.on('permissionError', (error) => {
 serialport.on('error', (error) => {
     console.log(`${error}`);
     if (error.toString().includes(`Error: Opening ${options.path}`) || error.toString().includes("No such file or directory")) {
-        console.log(`[#${[Settings.ConnectionAttempts+1]}] Attempting to reconnect...`);
+        console.log(`[#${[Settings.ConnectionAttempts+1]}] Attempting to connect to ${options.path}`);
         setTimeout(() => {
             // Timeout after 5 attempts
-            if (Settings.ConnectionAttempts >= 4) return console.log(`Unable to reconnect to ${options.path}`);
+            if (Settings.ConnectionAttempts >= 4) return console.log(`Unable to connect to ${options.path}`);
             Settings.ConnectionAttempts++;
             serialport.open();
         }, 5000);
