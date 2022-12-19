@@ -86,7 +86,9 @@ serialport.on('error', (error) => {
 });
 
 // Parse serial port data
-parser.on('data', console.log);
+parser.on('data', (data) => {
+    console.log(data);
+};
 
 // Catch serial port disconnect
 serialport.on('disconnect', () => {
