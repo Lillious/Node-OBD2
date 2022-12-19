@@ -1,0 +1,61 @@
+@font-face {
+    font-family: RooneySans;
+    src: url(../fonts/RooneySans.ttf);
+}
+
+body {
+    background: #161b22;
+    color: #3f78c4;
+    font-family: RooneySans;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    user-select: none;
+}
+
+footer {
+    font-size: 18px;
+    position: fixed;
+    left: 20px;
+    bottom: 50px;
+    text-align: left;
+    color: #fc8c03;
+}
+
+button, button:disabled:hover, button:disabled:active {
+    width: 100px;
+    padding: 8px;
+    background: #21262d;
+    border: 1px solid #2a3038;
+    border-radius: 5px;
+    color: #3f78c4;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2b313b;
+    border: 1px solid #343b45;
+    color: #4b93f2;
+}
+
+button:active {
+    background: #3f78c4;
+    border: 1px solid #3b7dd4;
+    color: #c7cfd7;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover, button:disabled:active {
+    cursor: not-allowed;
+}
+
+#connection-buttons {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
