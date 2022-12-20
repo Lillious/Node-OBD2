@@ -19,6 +19,7 @@ socket.on('serialport', (data) => {
     }
 });
 
+// Check if connection is stuck
 setTimeout(() => {
     if (statusText.innerHTML == 'Connecting...') {
         statusText.innerHTML = 'Error: Unable to connect to serial port';
@@ -27,6 +28,22 @@ setTimeout(() => {
     }
 }, 3000);
 
+socket.on('connect', () => {
+    statusText.innerHTML = 'Checking connection...';
+    statusText.style.color = '#fc8c03';
+    connect.disabled = true;
+    disconnect.disabled = true;
+});
+
+// Lost connection
+socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+    statusText.innerHTML = 'Status: Disconnected';
+    statusText.style.color = '#d93025';
+    connect.disabled = false;
+    disconnect.disabled = true;
+});
+
 if (connect) {
     connect.addEventListener('click', () => {
         socket.emit('_connect');
@@ -34,6 +51,14 @@ if (connect) {
         disconnect.disabled = true;
         statusText.style.color = '#fc8c03';
         statusText.innerHTML = 'Connecting...';
+        // Check if connection is stuck
+        setTimeout(() => {
+            if (statusText.innerHTML == 'Connecting...') {
+                statusText.innerHTML = 'Error: Unable to connect to serial port';
+                statusText.style.color = '#d93025';
+                connect.disabled = false;
+            }
+        }, 3000);
     });
 }
 
@@ -44,5 +69,12 @@ if (disconnect) {
         disconnect.disabled = true;
         statusText.style.color = '#fc8c03';
         statusText.innerHTML = 'Disconnecting...';
+        setTimeout(() => {
+            if (statusText.innerHTML == 'Disconnecting...') {
+                statusText.innerHTML = 'Error: An error occurred while disconnecting';
+                statusText.style.color = '#d93025';
+                connect.disabled = false;
+            }
+        }, 3000);
     });
 }
