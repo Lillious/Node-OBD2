@@ -42,23 +42,17 @@ const options = {
     flowControl: false,
 };
 
-const settings = {
-    Connected: false,
-};
-
 class Serial {
-
     constructor (options) {
         this.options = options;
         this.serialport = new SerialPort(this.options);
         this.parser = this.serialport.pipe(new ReadlineParser());
     }
-
     connect() {
         this.serialport.open();
 
         this.serialport.on('open', () => {
-            settings.Connected = true;
+            // Connection opened
         });
 
         this.serialport.on('disconnect', () => {
@@ -66,7 +60,7 @@ class Serial {
         });
 
         this.serialport.on('close', () => {
-            settings.Connected = false;
+            // Connection closed
         });
 
         this.serialport.on('error', (err) => {
@@ -77,7 +71,6 @@ class Serial {
             console.log(data);
         });
     }
-
     disconnect() {
         this.serialport.close();
     }
@@ -88,7 +81,7 @@ let serial = new Serial(options);
 io.on('connection', async (socket) => {
     // Check if serial port is open every 5 seconds
     setInterval(() => {
-        if (settings.Connected) {       
+        if (serial.serialport.isOpen) {       
             socket.emit('serialport', { status: 'open', path: options.path });
         } else {
             socket.emit('serialport', { status: 'closed' });
@@ -97,6 +90,14 @@ io.on('connection', async (socket) => {
 
     socket.on('_connect', () => {
         serial.connect();
+        // Request VIN
+        serial.serialport.write('010D\r\n', (err) => {
+            if (err) {
+                console.log(`Error on write: ${err.message}`);
+            } else {
+                console.log('VIN requested');
+            }
+        });
     });
 
     socket.on('_disconnect', () => {

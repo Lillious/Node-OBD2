@@ -2,11 +2,11 @@
   "name": "node-obd2",
   "version": "1.0.0",
   "description": "A framework for connecting to a vehicle's OBD2 port",
-  "main": "src/Service.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/Service.js"
+    "start": "node src/app.js"
   },
   "repository": {
     "type": "git",
