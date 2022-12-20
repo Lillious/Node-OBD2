@@ -23,6 +23,7 @@
     "@serialport/bindings-cpp": "^10.8.0",
     "@serialport/list": "^10.5.0",
     "child_process": "^1.0.2",
+    "pm2": "^5.2.2",
     "serialport": "^10.5.0",
     "socket.io": "^4.5.4"
   }
