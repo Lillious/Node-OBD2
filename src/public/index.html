@@ -5,12 +5,18 @@
         <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
-        <div id="connection-buttons">
-            <button id="connect" disabled type="button">Connect</button>
-            <button id="disconnect" disabled type="button">Disconnect</button>
-        </div>
-        <footer>
-            <p id="status">Checking connection...</p>
-        </footer>
+        <center>
+            <div id="terminal">
+                <div id="output"></div>
+                <input id="command" disabled autocomplete="off" spellcheck="false" type="text" placeholder="Enter a command...">
+                <button id="send" disabled type="button">Send</button>
+            </div>
+            <div id="connection-buttons">
+                <p id="status">Error: An unexpected error occurred</p>
+                <button id="connect" disabled type="button">Connect</button>
+                <button id="disconnect" disabled type="button">Disconnect</button>
+                <button id="retry" disabled type="button">Restart</button>
+            </div>
+        </center>
     </body>
 </html>

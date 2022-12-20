@@ -1,3 +1,21 @@
+::-webkit-scrollbar {
+    background: transparent;
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3f78c4;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background: #3f78c4;
+  }
+
 @font-face {
     font-family: RooneySans;
     src: url(../fonts/RooneySans.ttf);
@@ -13,12 +31,8 @@ body {
     user-select: none;
 }
 
-footer {
+#status {
     font-size: 18px;
-    position: fixed;
-    left: 20px;
-    bottom: 50px;
-    text-align: left;
     color: #fc8c03;
 }
 
@@ -56,6 +70,53 @@ button:disabled:hover, button:disabled:active {
 
 #connection-buttons {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 0;
+    left: 50%;
+    width: 500px;
+    transform: translate(-50%, -50%);
+}
+
+#terminal {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translate(-50%, -15%);
+    width: 500px;
+}
+
+#output {
+    background: #0d1117;
+    border: 1px solid #22282e;
+    padding: 5px;
+    border-radius: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 500px;
+    margin-bottom: 20px;
+}
+
+#output p {
+    text-align: left;
+}
+
+input {
+    background: #0d1117;
+    border: 1px solid #22282e;
+    border-radius: 5px;
+    color: #c7cfd7;
+    padding: 8px;
+    font-size: 16px;
+    width: 395px;
+    margin-left: -2px;
+    outline: none;
+}
+
+
+input:focus {
+    border: 1px solid #3f78c4;
+}
+
+input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

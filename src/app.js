@@ -22,6 +22,11 @@ server.listen(port, () => {
     console.log(`Express listening on port ${port}`)
 });
 
+app.get('/restart', function (req, res, next) {
+    res.redirect('/');
+    process.exit(1);
+});
+
 const OpenSerialPort = () => {
     return new Promise((resolve, reject) => {
         Binding.list().then((ports) => {
@@ -55,12 +60,9 @@ class Serial {
             // Connection opened
         });
 
-        this.serialport.on('disconnect', () => {
-            this.serialport.close();
-        });
-
         this.serialport.on('close', () => {
-            // Connection closed
+            // Disconnect
+            console.log('Connection terminated')
         });
 
         this.serialport.on('error', (err) => {
@@ -68,7 +70,8 @@ class Serial {
         });
 
         this.parser.on('data', (data) => {
-            console.log(data);
+            console.log(`Data received: ${data}`);
+            io.emit('data', data);
         });
     }
     disconnect() {
@@ -86,17 +89,20 @@ io.on('connection', async (socket) => {
         } else {
             socket.emit('serialport', { status: 'closed' });
         }
-    }, 1000);
+    }, 50);
 
     socket.on('_connect', () => {
         serial.connect();
-        // Request VIN
-        serial.serialport.write('010D\r\n', (err) => {
-            if (err) {
-                console.log(`Error on write: ${err.message}`);
-            } else {
-                console.log('VIN requested');
-            }
+
+        socket.on('command', (data) => {
+            serial.serialport.write('010D\r\n', (err) => {
+                if (err) {
+                    console.log(`Error on write: ${err.message}`);
+                    io.emit('data', 'An error occurred while writing to the serial port');
+                } else {
+                    console.log(`Command received: ${data}`);
+                }
+            });
         });
     });
 
