@@ -157,9 +157,17 @@ if (command && send) {
     });
     send.addEventListener('click', () => {
         if (command.value == '') return;
+        if (!command.value.match(/^[a-fA-F0-9_]+$/)) {
+            // Invalid command
+            command.classList.add('invalid');
+            setTimeout(() => {
+                command.classList.remove('invalid');
+            }, 5000);
+            return;
+        }
         // Create p element
         let p = document.createElement('p');
-        p.innerHTML = `> ${command.value}<br>`;
+        p.innerHTML = `> ${command.value.toString()}<br>`;
         output.appendChild(p);
         socket.emit('command', command.value);
         command.value = '';
