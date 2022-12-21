@@ -29,11 +29,27 @@ body {
     line-height: 1.5;
     margin: 0;
     user-select: none;
+    overflow: hidden;
 }
 
 #status {
-    font-size: 18px;
+    position: fixed;
+    font-size: 14px;
     color: #fc8c03;
+    bottom: 0;
+    left: 20px;
+}
+
+#connection-buttons {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 100px;
+    padding: 5px;
+}
+
+#connection-buttons button {
+    margin-top: 20px;
 }
 
 button, button:disabled:hover, button:disabled:active {
@@ -68,31 +84,18 @@ button:disabled:hover, button:disabled:active {
     cursor: not-allowed;
 }
 
-#connection-buttons {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 500px;
-    transform: translate(-50%, -50%);
-}
-
-#terminal {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translate(-50%, -15%);
-    width: 500px;
-}
-
 #output {
+    position: absolute;
     background: #0d1117;
     border: 1px solid #22282e;
     padding: 5px;
     border-radius: 8px;
     overflow-x: hidden;
     overflow-y: auto;
-    height: 500px;
-    margin-bottom: 20px;
+    right: 125px;
+    left: 15px;
+    top: 65px;
+    bottom: 12%;
 }
 
 #output p {
@@ -100,17 +103,18 @@ button:disabled:hover, button:disabled:active {
 }
 
 input {
+    position: absolute;
     background: #0d1117;
     border: 1px solid #22282e;
     border-radius: 5px;
     color: #c7cfd7;
     padding: 8px;
     font-size: 16px;
-    width: 395px;
-    margin-left: -2px;
+    left: 15px;
+    right: 15px;
+    top: 14px;
     outline: none;
 }
-
 
 input:focus {
     border: 1px solid #3f78c4;

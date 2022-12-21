@@ -30,6 +30,8 @@ socket.on('serialport', (data) => {
         enable('connect')
         disable('disconnect')
         enable('retry')
+        disable('send')
+        disable('command')
     }
 });
 
@@ -41,6 +43,8 @@ setTimeout(() => {
         disable('connect')
         disable('disconnect')
         enable('retry')
+        disable('send')
+        disable('command')
     }
 }, 1000);
 
@@ -50,6 +54,8 @@ socket.on('connect', () => {
     disable('connect')
     disable('disconnect')
     disable('retry')
+    disable('send')
+    disable('command')
     // Check if connection is stuck
     setTimeout(() => {
         if (statusText.innerHTML == 'Connecting...' || statusText.innerHTML == 'Checking Connection...') {
@@ -58,6 +64,8 @@ socket.on('connect', () => {
             disable('connect')
             disable('disconnect')
             enable('retry')
+            disable('send')
+            disable('command')
         }
     }, 1000);
 });
@@ -69,16 +77,20 @@ socket.on('disconnect', () => {
     enable('connect')
     disable('disconnect')
     disable('retry')
+    disable('send')
+    disable('command')
 });
 
 if (connect) {
     connect.addEventListener('click', () => {
         socket.emit('_connect');
-        connect.disabled = true;
-        disconnect.disabled = true;
+        disable('connect')
+        disable('disconnect')
+        disable('retry')
+        disable('send')
+        disable('command')
         statusText.style.color = '#fc8c03';
         statusText.innerHTML = 'Connecting...';
-        disable('retry')
         // Check if connection is stuck
         setTimeout(() => {
             if (statusText.innerHTML == 'Connecting...') {
@@ -87,6 +99,8 @@ if (connect) {
                 disable('connect')
                 disable('disconnect')
                 enable('retry')
+                disable('send')
+                disable('command')
             }
         }, 1000);
     });
@@ -94,12 +108,12 @@ if (connect) {
 
 if (disconnect) {
     disconnect.addEventListener('click', () => {
-        socket.emit('_disconnect');
         disable('connect')
         disable('disconnect')
         disable('retry')
         disable('send')
         disable('command')
+        socket.emit('_disconnect');
         statusText.style.color = '#fc8c03';
         statusText.innerHTML = 'Disconnecting...';
         // Send request to restart server
