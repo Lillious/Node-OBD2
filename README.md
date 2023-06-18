@@ -1,3 +1,12 @@
 # Node-OBD2
-A framework for connecting to a vehicle's OBD2 port
-(Waiting for spring to start outdoor testing)
+An open-source web based OBD utility for the MQB lineup written in JavaScript.
+
+| Feature | Status |
+|----------|----------|
+| Auto connect | Done |
+| Realtime data transmission | Done |
+| Read/Write | Testing |
+| Read/Write looping | Not Implemented |
+| Bluetooth | Not Implemented |
+| Conditional CEL clearing | Not Implemented |
+| Time based execution | Not Implemented |
