@@ -14,7 +14,7 @@ const getMode = (hex) => {
 const getPID = (hex) => {
     hex = hex.toUpperCase();
     const mode = hex.slice(0, 2);
-    const pid = hex.slice(2, 4);
+    const pid = hex.slice(2, 6);
     if (translations.ServiceModes[mode]) {
         return [translations.ServiceModes[mode].Name, translations.ServiceModes[mode].PIDs[pid].Description];
     } else {

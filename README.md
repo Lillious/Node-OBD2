@@ -10,3 +10,4 @@ An open-source web based OBD utility for the MQB lineup written in JavaScript.
 | Bluetooth | Not Implemented |
 | Conditional CEL clearing | Not Implemented |
 | Time based execution | Not Implemented |
+| CAN bus command translations | Done |

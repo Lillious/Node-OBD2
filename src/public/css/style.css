@@ -21,6 +21,10 @@
     src: url(../fonts/RooneySans.ttf);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background: #161b22;
     color: #3f78c4;
@@ -88,7 +92,7 @@ button:disabled:hover, button:disabled:active {
     position: absolute;
     background: #0d1117;
     border: 1px solid #22282e;
-    padding: 5px;
+    padding: 25px;
     border-radius: 2px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -96,10 +100,14 @@ button:disabled:hover, button:disabled:active {
     left: 15px;
     top: 65px;
     bottom: 12%;
+    user-select: text;
 }
 
 #output p {
     text-align: left;
+    border-bottom: 1px solid #22282e;
+    width: 100%;
+    padding-bottom: 15px;
 }
 
 input {
@@ -127,4 +135,8 @@ input:disabled {
 
 .invalid:focus {
     border: 1px solid #ed6a5e;
+}
+
+.command {
+    margin-left: 25px;
 }

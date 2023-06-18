@@ -25,10 +25,35 @@ socket.on('disconnected', () => {
     disable('command')
 });
 
+socket.on('invalidInput', () => {
+    command.classList.add('invalid');
+    setTimeout(() => {
+        command.classList.remove('invalid');
+    }, 1000);
+});
+
+socket.on('clearOutput', () => {
+    output.innerHTML = '';
+});
+
+socket.on('help', (data) => {
+    let p = document.createElement('p');
+    p.innerHTML = `> <b>Commands</b>:<br>
+    <span class="command">clear</span> - Clear the output<br>
+    <span class="command">help</span> - Display this help message<br>
+    <span class="command">get <PID></span> - Gets information about the following PID code<br>`;
+    Object.keys(data.Commands.data).forEach((key) => {
+        p.innerHTML += `<span class="command">${key}</span> - ${data.Commands.data[key]}<br>`;
+    });
+    output.appendChild(p);
+    output.scrollTo({top: output.scrollHeight, behavior: 'smooth'})
+});
+
 socket.on('message', (message) => {
     let p = document.createElement('p');
     p.innerHTML = `${message}<br>`;
     output.appendChild(p);
+    output.scrollTo({top: output.scrollHeight, behavior: 'smooth'})
 });
 
 socket.on("connect_error", () => {
@@ -64,6 +89,7 @@ if (disconnect) {
 }
 
 if (command && send) {
+
     // Check if enter key is pressed
     command.addEventListener('keypress', (event) => {
         if (command.value == '') return;
@@ -72,20 +98,10 @@ if (command && send) {
             document.getElementById('send').click();
         }
     });
+    
     send.addEventListener('click', () => {
         if (command.value == '') return;
-        if (!command.value.match(/^[a-fA-F0-9_]+$/)) {
-            // Invalid command
-            command.classList.add('invalid');
-            setTimeout(() => {
-                command.classList.remove('invalid');
-            }, 1000);
-            return;
-        }
-        // Create p element
-        let p = document.createElement('p');
-        p.innerHTML = `> ${command.value.toString()}<br>`;
-        output.appendChild(p);
+        command.value = command.value.trim();
         socket.emit('data', command.value);
         command.value = '';
     });
