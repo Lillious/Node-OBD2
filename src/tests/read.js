@@ -5,10 +5,6 @@ serialport.open((err) => {
     serialport.write('Hello world');
 });
 
-serialport.on('open', (err) => {
-    
-});
-
 serialport.on('data', (data) => {
     console.log(data.toString());
 });

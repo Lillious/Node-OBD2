@@ -1,4 +1,4 @@
-import * as translations from '../Translations.js';
+import * as translations from '../translations.js';
 
 const getMode = (hex) => {
     hex = hex.toUpperCase();
