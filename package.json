@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2 start src/app.js"
+    "start": "pm2 start src/app.js && npm run clearlogs",
+    "restart": "pm2 restart src/app.js && npm run clearlogs",
+    "clearlogs": "pm2 flush && pm2 logs app --lines 1000"
   },
   "repository": {
     "type": "git",

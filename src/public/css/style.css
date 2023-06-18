@@ -57,7 +57,7 @@ button, button:disabled:hover, button:disabled:active {
     padding: 8px;
     background: #21262d;
     border: 1px solid #2a3038;
-    border-radius: 5px;
+    border-radius: 2px;
     color: #3f78c4;
     font-weight: 500;
     cursor: pointer;
@@ -89,7 +89,7 @@ button:disabled:hover, button:disabled:active {
     background: #0d1117;
     border: 1px solid #22282e;
     padding: 5px;
-    border-radius: 8px;
+    border-radius: 2px;
     overflow-x: hidden;
     overflow-y: auto;
     right: 125px;
@@ -106,7 +106,7 @@ input {
     position: absolute;
     background: #0d1117;
     border: 1px solid #22282e;
-    border-radius: 5px;
+    border-radius: 2px;
     color: #c7cfd7;
     padding: 8px;
     font-size: 16px;
