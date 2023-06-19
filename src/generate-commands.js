@@ -1,4 +1,4 @@
-import * as translations from './Translations.js';
+import * as translations from './translations.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

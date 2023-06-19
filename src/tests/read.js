@@ -1,10 +1,20 @@
 import { serialport } from './connect.js';
 
-serialport.open((err) => {
+// serialport.open((err) => {
+//     if (err) console.log(err.message);
+//     serialport.write('Hello world');
+// });
+
+// serialport.on('data', (data) => {
+//     console.log(data.toString());
+// });
+
+
+serialport.on('open', (err) => {
     if (err) console.log(err.message);
-    serialport.write('Hello world');
+    console.log('Serial port opened');
 });
 
-serialport.on('data', (data) => {
-    console.log(data.toString());
-});
+setInterval(() => {
+    
+}, 1000);

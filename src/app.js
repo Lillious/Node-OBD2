@@ -34,7 +34,7 @@ const OpenSerialPort = () => {
 
 io.on('connection', async (socket) => {
     const options = {
-        baudRate: 115200,
+        baudRate: 9600,
         autoOpen: false,
         dataBits: 8,
         path: await OpenSerialPort(),
@@ -43,6 +43,15 @@ io.on('connection', async (socket) => {
     };
     
     const serialport = new SerialPort(options);
+
+    function write(data) {
+        serialport.write(`${data}\r`, (err) => {
+            if (err) {
+                return socket.emit('message', err.message);
+            }
+            console.log('Sent data:', data);
+        });
+    }
 
     // Check if the serial port is already open before opening it
     if (serialport.isOpen) {
@@ -58,7 +67,11 @@ io.on('connection', async (socket) => {
     // Handle opened connection events
     serialport.on('open', () => {
         console.log(`Serial port opened at ${options.path}`);
-        socket.emit('connected', { path: options.path });        
+        socket.emit('connected', { path: options.path });
+        write('ATZ');
+        write('ATL1');
+        write('ATH0');
+        write('ATSP0');
     });
     
     // Handle closed connection events
@@ -87,6 +100,7 @@ io.on('connection', async (socket) => {
                     return [translations.ServiceModes[mode].Name, translations.ServiceModes[mode].PIDs[pid].Description, bytesReturned];
                 }
             }
+
             const mode = getPID(data);
 
             var returnedBytes = [];
@@ -114,29 +128,20 @@ io.on('connection', async (socket) => {
             }
         }
 
-        // Convert the data to a buffer as hex
-        data = Buffer.from(data, 'hex');
-
         // Check if data is hex
         if (!/^[0-9a-fA-F]+$/.test(data.toString('hex'))) return socket.emit('invalidInput');
 
-        // Check if buffer is empty
-        if (data.length === 0) return socket.emit('message', 'Empty buffer');
-
         socket.emit('message', `> ${command}`);
-        socket.emit('message', `&lt;Buffer ${data.toString('hex').toUpperCase().match(/.{1,2}/g).join(' ')}&gt;`);
 
-        serialport.write(data, (err) => {
-            if (err) {
-                return socket.emit('message', err.message);
-            }
-            console.log('Sent data: ', data);
-        });
+        // Write data to the serial port
+        write(data);
     });
 
-    // Handle data received from the serial port
-    serialport.on('data', (data) => {
-        console.log(data.toString());
+    serialport.read((err, data) => {
+        if (err) {
+            return socket.emit('message', err.message);
+        }
+        console.log('Received data:', data);
         socket.emit('message', data.toString());
     });
 
